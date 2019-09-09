@@ -9,6 +9,18 @@
             "request": "launch",
             "name": "Launch Program",
             "program": "${workspaceFolder}\\server.js"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Mocha Tests",
+            "program": "${workspaceRoot}/node_modules/mocha/bin/mocha",
+            "args": [
+                "--inspect-brk",
+                "${workspaceFolder}/test/*.js"
+            ],
+            "port": 9229,
+            "internalConsoleOptions": "openOnSessionStart"
         }
     ]
 }

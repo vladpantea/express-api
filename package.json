@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha \"test/*.spec.js\"",
+    "start": "node index.js"
   },
   "keywords": [],
   "author": "",
@@ -18,5 +19,10 @@
     "helmet": "^3.20.0",
     "joi": "^14.3.1",
     "morgan": "^1.9.1"
+  },
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "mocha": "^6.2.0",
+    "supertest": "^4.0.2"
   }
 }

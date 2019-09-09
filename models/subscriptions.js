@@ -1,7 +1,7 @@
 const Joi = require('joi');
 
 module.exports.SubscriptionValidationSchema = Joi.object().keys({
-    planId: Joi.number().positive().required(),
+    planId: Joi.string().min(24).max(24).required(),
     coupon: Joi.number().min(0).max(100).optional().allow(null),
     cardNumber: Joi.string().creditCard().required(),
     holderName: Joi.string().alphanum().required(),

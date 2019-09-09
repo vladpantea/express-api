@@ -3,9 +3,7 @@ const Middleware = require('./middleware/middleware');
 const dotenv = require('dotenv');
 const ErrorHandlingMiddleware = require('./middleware/error-handler');
 
-
 dotenv.config();
-const PORT = process.env.PORT || 3000;
 
 const app = express();
 Middleware(app);
@@ -18,6 +16,4 @@ app.use('/api/subscriptions', SubscriptionController);
 
 ErrorHandlingMiddleware(app);
 
-app.listen(PORT, () => {
-    console.log(`Application running on port: ${PORT}`);
-});
+module.exports = app;

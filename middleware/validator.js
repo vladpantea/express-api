@@ -1,25 +1,28 @@
 const Joi = require('joi');
-const Subscription = require('../models/subscriptions');
-const Plan = require('../models/plans');
-const ValidationError = require('../errors/errors').ValidationError;
+const { SubscriptionValidationSchema } = require('../models/subscriptions');
+const { PlanValidationSchema } = require('../models/plans');
+const { IdValidationSchema } = require('../models/generic');
+const { ValidationError } = require('../errors/errors');
 
 'use strict'
 
 let validators = {
     'Subscription': {
         scopes: {
-            default: Subscription.SubscriptionValidationSchema
+            default: SubscriptionValidationSchema,
+            id: IdValidationSchema
         }
     },
     'Plan': {
         scopes: {
-            default: Plan.PlanValidationSchema
+            default: PlanValidationSchema,
+            id: IdValidationSchema
         }
     }
 };
 
 function scopeExists(validator, scope) {
-    return Object.keys(validator.scope).find(key => key === scope) !== undefined;
+    return Object.keys(validator.scopes).find(key => key === scope) !== undefined;
 }
 
 function getSchema(model, scope) {
@@ -51,7 +54,15 @@ function validate(model, object, scope) {
 
 module.exports = function ValidationMiddleware(model, scope) {
     return (req, res, next) => {
-        const validationResult = validate(model, req.body, scope);
+        let reqMethod = req.method;
+        let validationResult = null;
+
+        if (reqMethod === 'GET' || reqMethod === 'DELETE') {
+            validationResult = validate(model, req.params, scope);
+        } else {
+            validationResult = validate(model, req.body, scope);
+        }
+
         if (validationResult.error) {
             throw new ValidationError(validationResult.error.message);
         } else {
