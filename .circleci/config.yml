@@ -35,6 +35,8 @@ jobs:
           paths:
             - node_modules
           key: v1-dependencies-{{ checksum "package.json" }}
-
+      - run:
+          name: "What was my custom environment variable?"
+          command: echo ${FORCE_COLOR}
       # run tests!
       - run: npm test
