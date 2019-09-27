@@ -33,9 +33,5 @@ jobs:
             - node_modules
           key: v1-dependencies-{{ checksum "package.json" }}
           
-      - run:
-          name: Setup Environment Variables
-          command: |
-            echo "export FORCE_COLOR=1" >> $BASH_ENV
       # run tests!
       - run: npm test

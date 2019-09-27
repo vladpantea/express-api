@@ -34,6 +34,7 @@ before(async () => {
     process.env.MONGODB_DB_USER = ''
     process.env.MONGODB_DB_PASS = ''
     process.env.UPLOAD_FOLDER = 'test/uploaded_test_cv'
+    process.env.FORCE_COLOR = 1
     const mkdir = promisify(fs.mkdir)
     if (!fs.existsSync(`./${process.env.UPLOAD_FOLDER}`)) {
         await mkdir(`./${process.env.UPLOAD_FOLDER}`)
