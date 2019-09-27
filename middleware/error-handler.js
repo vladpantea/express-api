@@ -1,11 +1,10 @@
-const chalk = require('chalk');
 const { ValidationError, DBOperationError, FileUploadError } = require('../errors/errors');
 
 function errorLogger(err, req, res, next) {
     if (err && err.error && err.error.stack) {
-        console.log(chalk.default.red(err.error.stack));
+        console.log(err.error.stack);
     } else if (err.message) {
-        console.log(chalk.default.red(err.message));
+        console.log(err.message);
     }
     next(err);
 }

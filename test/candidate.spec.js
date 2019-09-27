@@ -6,7 +6,6 @@ const fs = require('fs')
 const { promisify } = require('util')
 const rimraf = require("rimraf")
 const wtf = require('wtfnode')
-const chalk = require('chalk')
 
 let app = null
 let request = null
@@ -45,12 +44,12 @@ after((done) => {
     process.env = env
 
     rimraf('./test/uploaded_test_cv', () => {
-        console.log(chalk.green.bold('Test folder deleted.'))
+        console.log('Test folder deleted.')
         if (mongod) {
             mongod.stop().then(() => {
                 ctrl.connClose().then(() => {
                     //wtf.dump()    
-                    console.log(chalk.green.bold('Database connection closed'))                
+                    console.log('Database connection closed')                
                     done()
                 })
             })
