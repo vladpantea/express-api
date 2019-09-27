@@ -1,7 +1,7 @@
 const chai = require('chai')
 const expect = chai.expect
 const MongoMemoryServer = require('mongodb-memory-server').MongoMemoryServer
-const mongod = new MongoMemoryServer()
+const mongod = new MongoMemoryServer({ debug: true })
 const fs = require('fs')
 const { promisify } = require('util')
 const rimraf = require("rimraf")
