@@ -8,6 +8,9 @@ jobs:
     docker:
       # specify the version you desire here
       - image: node:12
+        environment:
+          FORCE_COLOR: '1'
+          UPLOAD_FOLDER: 'test/uploaded_test_cv'
 
       # Specify service dependencies here if necessary
       # CircleCI maintains a library of pre-built images
@@ -32,6 +35,6 @@ jobs:
           paths:
             - node_modules
           key: v1-dependencies-{{ checksum "package.json" }}
-          
+
       # run tests!
       - run: npm test
