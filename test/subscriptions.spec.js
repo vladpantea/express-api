@@ -4,7 +4,7 @@ const app = require('../server')
 const request = require('supertest')
 
 
-describe('Subscriptions API tests', () => {
+xdescribe('Subscriptions API tests', () => {
 
     it('expect GET /api/subscriptions returns list of subscriptions', async () => {
         request(app)

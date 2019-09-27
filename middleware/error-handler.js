@@ -1,8 +1,10 @@
 const chalk = require('chalk');
-const { ValidationError, DeleteError } = require('../errors/errors');
+const { ValidationError, DBOperationError, FileUploadError } = require('../errors/errors');
 
 function errorLogger(err, req, res, next) {
-    if (err.message) {
+    if (err && err.error && err.error.stack) {
+        console.log(chalk.default.red(err.error.stack));
+    } else if (err.message) {
         console.log(chalk.default.red(err.message));
     }
     next(err);
@@ -10,8 +12,10 @@ function errorLogger(err, req, res, next) {
 
 function validationErrorHandler(err, req, res, next) {
     if (err instanceof ValidationError) {
-        return res.sendStatus(400);
-    } else if (err instanceof DeleteError) {
+        return res.status(400).send({ error: err.message });
+    } else if (err instanceof DBOperationError) {
+        return res.status(500).send({ error: err.message });
+    } else if (err instanceof FileUploadError) {
         return res.sendStatus(400);
     }
     next(err);

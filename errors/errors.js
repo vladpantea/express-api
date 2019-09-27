@@ -1,7 +1,9 @@
 const ValidationError = require('./validation-error');
-const DeleteError = require('./delete-error')
+const DBOperationError = require('./db-operation-error')
+const FileUploadError = require('./file-upload-error');
 
 module.exports = {
     ValidationError,
-    DeleteError
+    DBOperationError,
+    FileUploadError
 };

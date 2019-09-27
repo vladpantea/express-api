@@ -1,6 +1,6 @@
-module.exports = class ValidationError{
+module.exports = class DBOperationError{
     constructor(message, err){
         this.message = message;
-        this.error = err;
+        this.err = err;
     }
 }

@@ -1,19 +1,31 @@
-const express = require('express');
-const Middleware = require('./middleware/middleware');
-const dotenv = require('dotenv');
-const ErrorHandlingMiddleware = require('./middleware/error-handler');
+const express = require('express')
+const Middleware = require('./middleware/middleware')
+const dotenv = require('dotenv')
+const ErrorHandlingMiddleware = require('./middleware/error-handler')
 
-dotenv.config();
+dotenv.config()
 
-const app = express();
-Middleware(app);
+const app = express()
+Middleware(app)
 
-const PlansController = require('./controllers/plans-controller');
-app.use('/api/plans', PlansController);
+const PositionsController = require('./controllers/positions-controller')
+app.use('/api/positions', PositionsController)
 
-const SubscriptionController = require('./controllers/subscriptions-controller');
-app.use('/api/subscriptions', SubscriptionController);
+const CandidatesController = require('./controllers/candidates-controller')
+app.use('/api/candidates', CandidatesController.router)
 
-ErrorHandlingMiddleware(app);
+ErrorHandlingMiddleware(app)
 
-module.exports = app;
+const gracefullyClean = (ctrl) => {
+    ctrl.connClose().then(() => {
+        console.log('Db connection closed')
+    })
+}
+
+process.on('SIGTERM', gracefullyClean.bind(this,CandidatesController))
+
+module.exports = {
+    app: app,
+    gracefullyClean: gracefullyClean,
+    candidatesCtrl: CandidatesController
+}
