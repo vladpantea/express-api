@@ -27,7 +27,11 @@ module.exports = (async function () {
 
     async function closeConnection() {
         db = null;
-        return client.close();
+        if(client){
+            return client.close();
+        }else{
+            return null;
+        }        
     }
 
     return {

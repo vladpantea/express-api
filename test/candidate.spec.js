@@ -1,11 +1,11 @@
 const chai = require('chai')
 const expect = chai.expect
 const MongoMemoryServer = require('mongodb-memory-server').MongoMemoryServer
-const mongod = new MongoMemoryServer({ debug: true })
+const mongod = new MongoMemoryServer({ debug: false })
 const fs = require('fs')
 const { promisify } = require('util')
 const rimraf = require("rimraf")
-const wtf = require('wtfnode')
+const chalk = require('chalk')
 
 let app = null
 let request = null
@@ -15,52 +15,58 @@ let env = null
 const MONGODB_SERVER = '127.0.0.1'
 let candidate_id = null
 
-before(async () => {
+before(async function () {
+    this.timeout(10000);
+    env = Object.assign({}, process.env)
+    process.env.NODE_ENV = 'test'
+    process.env.UPLOAD_FOLDER = 'test/uploaded_test_cv'
+    process.env.MONGODB_SERVER = MONGODB_SERVER
+    process.env.MONGODB_DB_USER = ''
+    process.env.MONGODB_DB_PASS = ''
+
+    const mkdir = promisify(fs.mkdir)
+    if (!fs.existsSync(`./${process.env.UPLOAD_FOLDER}`)) {
+        await mkdir(`./${process.env.UPLOAD_FOLDER}`)
+    }
+
     uri = await mongod.getConnectionString({ useNewUrlParser: true })
     port = await mongod.getPort()
     dbPath = await mongod.getDbPath()
     dbName = await mongod.getDbName()
     instanceInfo = await mongod.getInstanceInfo()
 
+    process.env.MONGODB_SERVER_PORT = port
+    process.env.MONGODB_DB = dbName
+
     app = require('../server').app
     ctrl = require('../server').candidatesCtrl
     request = require('supertest')
-
-    env = Object.assign({}, process.env)
-    process.env.MONGODB_SERVER = MONGODB_SERVER
-    process.env.MONGODB_SERVER_PORT = port
-    process.env.MONGODB_DB = dbName
-    process.env.MONGODB_DB_USER = ''
-    process.env.MONGODB_DB_PASS = ''
-    process.env.UPLOAD_FOLDER = 'test/uploaded_test_cv'
-    process.env.FORCE_COLOR = 1
-    const mkdir = promisify(fs.mkdir)
-    if (!fs.existsSync(`./${process.env.UPLOAD_FOLDER}`)) {
-        await mkdir(`./${process.env.UPLOAD_FOLDER}`)
-    }
 })
 
-after((done) => {
+after(function (done) {
+    this.timeout(10000);
     process.env = env
 
     rimraf('./test/uploaded_test_cv', () => {
-        console.log('Test folder deleted.')
+        console.log(chalk.blue('Test folder deleted.'))
         if (mongod) {
             mongod.stop().then(() => {
                 ctrl.connClose().then(() => {
-                    //wtf.dump()    
-                    console.log('Database connection closed')                
+                    console.log(chalk.blue('Database connection closed'))
                     done()
                 })
             })
+        } else {
+            done();
         }
     })
 })
 
 describe('API TESTS', function () {
 
-    describe('Seed Candidates DB', () => {
-        it('add 1 candidate to DB', (done) => {
+    describe('Candidates API tests', () => {
+        before(function (done) {
+            this.timeout(10000);
             request(app)
                 .post('/api/candidates')
                 .field('name', 'John Doe')
@@ -70,13 +76,11 @@ describe('API TESTS', function () {
                 .expect(200)
                 .end((err, res) => {
                     expect(err).to.be.null
-                    candidate_id = res.body._id
-                    done();
+                    candidate_id = res.body._id                    
+                    done()
                 })
         })
-    })
 
-    describe('Candidates API tests', () => {
         it('expect GET /api/candidates returns list of candidates', (done) => {
             request(app)
                 .get('/api/candidates')

@@ -1,9 +1,7 @@
 const express = require('express')
 const Middleware = require('./middleware/middleware')
-const dotenv = require('dotenv')
 const ErrorHandlingMiddleware = require('./middleware/error-handler')
-
-dotenv.config()
+const chalk = require('chalk')
 
 const app = express()
 Middleware(app)
@@ -18,7 +16,7 @@ ErrorHandlingMiddleware(app)
 
 const gracefullyClean = (ctrl) => {
     ctrl.connClose().then(() => {
-        console.log('Db connection closed')
+        console.log(chalk.blue('Db connection closed'))
     })
 }
 

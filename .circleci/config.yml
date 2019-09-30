@@ -7,10 +7,7 @@ jobs:
   build:
     docker:
       # specify the version you desire here
-      - image: node:12
-        environment:
-          FORCE_COLOR: '1'
-          UPLOAD_FOLDER: 'test/uploaded_test_cv'
+      - image: node:slim        
 
       # Specify service dependencies here if necessary
       # CircleCI maintains a library of pre-built images
@@ -35,8 +32,5 @@ jobs:
           paths:
             - node_modules
           key: v1-dependencies-{{ checksum "package.json" }}
-      - run:
-          name: "What was my custom environment variable?"
-          command: echo ${FORCE_COLOR}
       # run tests!
       - run: npm test
