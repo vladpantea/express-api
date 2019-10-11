@@ -15,54 +15,54 @@ let env = null
 const MONGODB_SERVER = '127.0.0.1'
 let candidate_id = null
 
-before(async function () {
-    this.timeout(10000);
-    env = Object.assign({}, process.env)
-    process.env.NODE_ENV = 'test'
-    process.env.UPLOAD_FOLDER = 'test/uploaded_test_cv'
-    process.env.MONGODB_SERVER = MONGODB_SERVER
-    process.env.MONGODB_DB_USER = ''
-    process.env.MONGODB_DB_PASS = ''
-
-    const mkdir = promisify(fs.mkdir)
-    if (!fs.existsSync(`./${process.env.UPLOAD_FOLDER}`)) {
-        await mkdir(`./${process.env.UPLOAD_FOLDER}`)
-    }
-
-    uri = await mongod.getConnectionString({ useNewUrlParser: true })
-    port = await mongod.getPort()
-    dbPath = await mongod.getDbPath()
-    dbName = await mongod.getDbName()
-    instanceInfo = await mongod.getInstanceInfo()
-
-    process.env.MONGODB_SERVER_PORT = port
-    process.env.MONGODB_DB = dbName
-
-    app = require('../server').app
-    ctrl = require('../server').candidatesCtrl
-    request = require('supertest')
-})
-
-after(function (done) {
-    this.timeout(10000);
-    process.env = env
-
-    rimraf('./test/uploaded_test_cv', () => {
-        console.log(chalk.blue('Test folder deleted.'))
-        if (mongod) {
-            mongod.stop().then(() => {
-                ctrl.connClose().then(() => {
-                    console.log(chalk.blue('Database connection closed'))
-                    done()
-                })
-            })
-        } else {
-            done();
-        }
-    })
-})
-
 describe('API TESTS', function () {
+    before(async function () {
+        this.timeout(10000);
+        env = Object.assign({}, process.env)
+        process.env.NODE_ENV = 'test'
+        process.env.UPLOAD_FOLDER = 'test/uploaded_test_cv'
+        process.env.MONGODB_SERVER = MONGODB_SERVER
+        process.env.MONGODB_DB_USER = ''
+        process.env.MONGODB_DB_PASS = ''
+
+        const mkdir = promisify(fs.mkdir)
+        if (!fs.existsSync(`./${process.env.UPLOAD_FOLDER}`)) {
+            await mkdir(`./${process.env.UPLOAD_FOLDER}`)
+        }
+
+        uri = await mongod.getConnectionString({ useNewUrlParser: true })
+        port = await mongod.getPort()
+        dbPath = await mongod.getDbPath()
+        dbName = await mongod.getDbName()
+        instanceInfo = await mongod.getInstanceInfo()
+
+        process.env.MONGODB_SERVER_PORT = port
+        process.env.MONGODB_DB = dbName
+
+        app = require('../server').app
+        ctrl = require('../server').candidatesCtrl
+        request = require('supertest')
+    })
+
+    after(function (done) {
+        this.timeout(10000);
+        process.env = env
+
+        rimraf('./test/uploaded_test_cv', () => {
+            console.log(chalk.blue('Test folder deleted.'))
+            if (mongod) {
+                mongod.stop().then(() => {
+                    ctrl.connClose().then(() => {
+                        console.log(chalk.blue('Database connection closed'))
+                        done()
+                    })
+                })
+            } else {
+                done();
+            }
+        })
+    })
+
 
     describe('Candidates API tests', () => {
         before(function (done) {
@@ -76,7 +76,7 @@ describe('API TESTS', function () {
                 .expect(200)
                 .end((err, res) => {
                     expect(err).to.be.null
-                    candidate_id = res.body._id                    
+                    candidate_id = res.body._id
                     done()
                 })
         })

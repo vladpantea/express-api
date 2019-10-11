@@ -17,7 +17,7 @@
             "program": "${workspaceRoot}/node_modules/mocha/bin/mocha",
             "args": [
                 "--inspect-brk",
-                "${workspaceFolder}/test/candidate.spec.js"
+                "${workspaceFolder}/test/*.spec.js"
             ],
             "port": 9229,
             "internalConsoleOptions": "openOnSessionStart"

@@ -7,7 +7,7 @@ const app = express()
 Middleware(app)
 
 const PositionsController = require('./controllers/positions-controller')
-app.use('/api/positions', PositionsController)
+app.use('/api/positions', PositionsController.router)
 
 const CandidatesController = require('./controllers/candidates-controller')
 app.use('/api/candidates', CandidatesController.router)
@@ -25,5 +25,6 @@ process.on('SIGTERM', gracefullyClean.bind(this,CandidatesController))
 module.exports = {
     app: app,
     gracefullyClean: gracefullyClean,
-    candidatesCtrl: CandidatesController
+    candidatesCtrl: CandidatesController,
+    positionsCtrl: PositionsController
 }

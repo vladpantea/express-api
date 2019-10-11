@@ -28,4 +28,11 @@ router.delete('/:id', [validation("Position","id")], asyncWrapper(async (req, re
     res.sendStatus(204);
 }));
 
-module.exports = router;
+const closeConnection = () => {
+    return positionService.mongoService.closeConnection()
+}
+
+module.exports = {
+    router: router,
+    connClose: closeConnection
+};
